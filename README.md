@@ -1,3 +1,3 @@
-# GoIT JavaScript Homework #11
+# GoIT JavaScript Homework #12
 
-Live site: 🔗 [reshets.github.io/goit-js-hw-11](https://reshets.github.io/goit-js-hw-11/)
+Live site: 🔗 [reshets.github.io/goit-js-hw-12](https://reshets.github.io/goit-js-hw-12/)
