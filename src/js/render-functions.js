@@ -1,4 +1,4 @@
-function showSearchResults(array) {
+function searchResultsMarkup(array) {
   return array
     .map(
       ({
@@ -33,4 +33,12 @@ function showSearchResults(array) {
     .join('');
 }
 
-export { showSearchResults };
+function showElement(element) {
+  element.classList.remove('hidden');
+}
+
+function hideElement(element) {
+  element.classList.add('hidden');
+}
+
+export { searchResultsMarkup, showElement, hideElement };

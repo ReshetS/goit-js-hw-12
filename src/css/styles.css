@@ -43,19 +43,20 @@ ul,
 ol {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   margin: 36px 156px;
+  gap: 32px;
 }
 
 .search-form {
   display: flex;
   justify-content: center;
-  margin-bottom: 32px;
   gap: 8px;
 }
 
@@ -93,20 +94,6 @@ ol {
 .submit-btn:hover,
 .submit-btn:focus {
   background-color: #6c8cff;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  border: 0;
-  padding: 0;
-
-  white-space: nowrap;
-  clip-path: inset(100%);
-  clip: rect(0 0 0 0);
-  overflow: hidden;
 }
 
 .loader {
@@ -233,6 +220,28 @@ ol {
 .accent {
   font-weight: 600;
   line-height: 1.33333;
+}
+
+.load-more-btn {
+  width: 125px;
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #4e75ff;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-weight: 500;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.load-more-btn:hover,
+.load-more-btn:focus {
+  background-color: #6c8cff;
+}
+
+.hidden {
+  display: none;
 }
 
 .sl-overlay {
