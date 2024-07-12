@@ -12,15 +12,17 @@ const API_KEY = new TextDecoder().decode(
   base64ToBytes('NDQ3MzQwMDItYzM5MDBlYjc0MWM2MjEzYzdlYzI5NTNlMw==')
 );
 
-async function searchImages(str) {
+async function searchImages({ q, page = 1, per_page } = {}) {
   return (
     await axios.get('/', {
       params: {
         key: API_KEY,
-        q: encodeURIComponent(str),
+        q: encodeURIComponent(q),
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: true,
+        page,
+        per_page,
       },
     })
   ).data;

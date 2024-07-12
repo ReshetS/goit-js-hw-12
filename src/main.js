@@ -1,3 +1,4 @@
+import elements from './js/elements';
 import { searchImages } from './js/pixabay-api';
 import {
   searchResultsMarkup,
@@ -9,27 +10,29 @@ import 'izitoast/dist/css/iziToast.min.css';
 import simpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const elements = {
-  form: document.querySelector('.js-search-form'),
-  input: document.querySelector('.js-search-input'),
-  gallery: document.querySelector('.js-gallery'),
-  loadMoreBtn: document.querySelector('.js-load-more-btn'),
-  loader: document.querySelector('.js-loader'),
-};
-
 const photosGallery = new simpleLightbox('.js-gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
   overlayOpacity: 0.8,
 });
 
+const params = {
+  q: '',
+  page: 1,
+  per_page: 15,
+  total_pages: 0,
+};
+
+hideElement(elements.loadMoreBtn);
+
 elements.form.addEventListener('submit', searchHandler);
 
 async function searchHandler(event) {
   event.preventDefault();
   elements.gallery.innerHTML = '';
-  const searchString = elements.input.value.trim();
-  if (searchString === '') {
+  params.page = 1;
+  params.q = elements.input.value.trim();
+  if (params.q === '') {
     return iziToast.error({
       message: 'Search field can not be empty!',
       position: 'topCenter',
@@ -44,7 +47,7 @@ async function searchHandler(event) {
   showElement(elements.loader);
 
   try {
-    const data = await searchImages(searchString);
+    const data = await searchImages(params);
     if (data.hits.length === 0) {
       elements.input.value = '';
       iziToast.error({
@@ -59,6 +62,13 @@ async function searchHandler(event) {
         maxWidth: '432px',
       });
     } else {
+      params.total_pages = Math.ceil(data.totalHits / params.per_page);
+      if (params.total_pages > 1) {
+        showElement(elements.loadMoreBtn);
+        elements.loadMoreBtn.addEventListener('click', loadMoreHandler);
+      } else {
+        hideElement(elements.loadMoreBtn);
+      }
       elements.input.value = '';
       elements.gallery.innerHTML = searchResultsMarkup(data.hits);
       photosGallery.refresh();
@@ -76,5 +86,50 @@ async function searchHandler(event) {
     });
   } finally {
     hideElement(elements.loader);
+  }
+}
+
+async function loadMoreHandler() {
+  showElement(elements.loader);
+  params.page += 1;
+  hideElement(elements.loadMoreBtn);
+  try {
+    const data = await searchImages(params);
+    elements.gallery.insertAdjacentHTML(
+      'beforeend',
+      searchResultsMarkup(data.hits)
+    );
+    photosGallery.refresh();
+    const galleryItem = document.querySelector('.gallery-item');
+    const galleryItemHeight = galleryItem.getBoundingClientRect().height;
+    window.scrollBy({
+      top: galleryItemHeight * 2,
+      behavior: 'smooth',
+    });
+  } catch (err) {
+    iziToast.error({
+      message: `Something went wrong... Error: ${err}`,
+      position: 'topCenter',
+      timeout: 3000,
+      messageColor: '#fafafb',
+      backgroundColor: '#ef4040',
+      iconUrl: './error.svg',
+      progressBarColor: '#b51b1b',
+      maxWidth: '432px',
+    });
+  } finally {
+    hideElement(elements.loader);
+    if (params.page === params.total_pages) {
+      elements.loadMoreBtn.removeEventListener('click', loadMoreHandler);
+      hideElement(elements.loadMoreBtn);
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'topRight',
+        timeout: 3000,
+        maxWidth: '432px',
+      });
+    } else {
+      showElement(elements.loadMoreBtn);
+    }
   }
 }
