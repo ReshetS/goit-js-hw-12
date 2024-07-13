@@ -31,6 +31,8 @@ async function searchHandler(event) {
   event.preventDefault();
   elements.gallery.innerHTML = '';
   params.page = 1;
+  elements.loadMoreBtn.removeEventListener('click', loadMoreHandler);
+  hideElement(elements.loadMoreBtn);
   params.q = elements.input.value.trim();
   if (params.q === '') {
     return iziToast.error({
