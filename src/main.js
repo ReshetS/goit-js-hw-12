@@ -33,6 +33,7 @@ async function searchHandler(event) {
   params.page = 1;
   elements.loadMoreBtn.removeEventListener('click', loadMoreHandler);
   hideElement(elements.loadMoreBtn);
+
   params.q = elements.input.value.trim();
   if (params.q === '') {
     return iziToast.error({
@@ -70,6 +71,13 @@ async function searchHandler(event) {
         elements.loadMoreBtn.addEventListener('click', loadMoreHandler);
       } else {
         hideElement(elements.loadMoreBtn);
+        iziToast.info({
+          message: "We're sorry, but you've reached the end of search results.",
+          position: 'topRight',
+          timeout: 3000,
+          maxWidth: '432px',
+        });
+        elements.loadMoreBtn.removeEventListener('click', loadMoreHandler);
       }
       elements.input.value = '';
       elements.gallery.innerHTML = searchResultsMarkup(data.hits);
@@ -123,7 +131,6 @@ async function loadMoreHandler() {
     hideElement(elements.loader);
     if (params.page === params.total_pages) {
       elements.loadMoreBtn.removeEventListener('click', loadMoreHandler);
-      hideElement(elements.loadMoreBtn);
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
